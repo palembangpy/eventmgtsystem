@@ -1,0 +1,56 @@
+@model EventManagementSystem.Models.DTO.CreateUserDto
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<div class="bg-white rounded-lg shadow p-6 max-w-2xl mx-auto">
+    <h2 class="text-2xl font-bold mb-6">Create New User</h2>
+    
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-red-600 mb-4"></div>
+        
+        <div class="mb-4">
+            <label asp-for="Name" class="block text-gray-700 font-medium mb-2"></label>
+            <input asp-for="Name" class="w-full border rounded px-3 py-2" />
+            <span asp-validation-for="Name" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Email" class="block text-gray-700 font-medium mb-2"></label>
+            <input asp-for="Email" type="email" class="w-full border rounded px-3 py-2" />
+            <span asp-validation-for="Email" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="UserType" class="block text-gray-700 font-medium mb-2"></label>
+            <select asp-for="UserType" class="w-full border rounded px-3 py-2">
+                @foreach (var type in ViewBag.UserTypes)
+                {
+                    <option value="@type">@type</option>
+                }
+            </select>
+            <span asp-validation-for="UserType" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Phone" class="block text-gray-700 font-medium mb-2"></label>
+            <input asp-for="Phone" class="w-full border rounded px-3 py-2" />
+            <span asp-validation-for="Phone" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Address" class="block text-gray-700 font-medium mb-2"></label>
+            <textarea asp-for="Address" rows="3" class="w-full border rounded px-3 py-2"></textarea>
+            <span asp-validation-for="Address" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="flex justify-end space-x-2">
+            <a asp-action="Index" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Cancel</a>
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Create</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
