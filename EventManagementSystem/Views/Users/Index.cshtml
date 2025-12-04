@@ -1,60 +1,147 @@
-@model IEnumerable<EventManagementSystem.Models.DTO.UserDto>
+@model List<EventManagementSystem.Models.DTO.UserDto>
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "Users Management";
+    ViewData["Subtitle"] = $"Manage all users ({ViewBag.TotalCount ?? 0} total)";
 }
 
-<div class="mb-4 flex justify-between items-center">
-    <div>
-        <label class="mr-2">Filter by Type:</label>
-        <select onchange="window.location.href='?userType=' + this.value" class="border rounded px-3 py-2">
-            <option value="">All Users</option>
-            @foreach (var type in ViewBag.UserTypes)
-            {
-                <option value="@type" selected="@(ViewBag.SelectedType == type)">@type</option>
-            }
-        </select>
+<!-- Actions Bar -->
+<div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+        <!-- Search & Filter -->
+        <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-3">
+            <form method="get" class="flex space-x-2">
+                <input type="text" name="search" value="@ViewBag.SearchTerm" placeholder="Search users..." 
+                       class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <div class="flex items-center space-x-2">
+                <label class="text-sm text-gray-600">Filter:</label>
+                <select onchange="window.location.href='?userType=' + this.value" 
+                        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Types</option>
+                    @foreach (var type in ViewBag.UserTypes)
+                    {
+                        <option value="@type" selected="@(ViewBag.SelectedType == type)">@type</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex space-x-2">
+            <a asp-action="Export" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                <i class="fas fa-download mr-2"></i>Export CSV
+            </a>
+            <a asp-action="Create" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition transform hover:scale-105">
+                <i class="fas fa-plus mr-2"></i>Add User
+            </a>
+        </div>
     </div>
-    <a asp-action="Create" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-        <i class="fas fa-plus mr-2"></i>Add New User
-    </a>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-            @foreach (var user in Model)
-            {
-                <tr>
-                    <td class="px-6 py-4">@user.Name</td>
-                    <td class="px-6 py-4">@user.Email</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-1 text-xs rounded @(user.UserType == "Speaker" ? "bg-blue-100 text-blue-800" : user.UserType == "Volunteer" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800")">
-                            @user.UserType
+<!-- Users Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @foreach (var user in Model)
+    {
+        var typeColor = user.UserType switch {
+            "Speaker" => "from-purple-500 to-pink-500",
+            "Volunteer" => "from-green-500 to-teal-500",
+            _ => "from-blue-500 to-cyan-500"
+        };
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-1">
+            <!-- Card Header with Gradient -->
+            <div class="bg-gradient-to-r @typeColor h-24 relative">
+                <div class="absolute -bottom-10 left-6">
+                    <div class="w-20 h-20 rounded-full border-4 border-white bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+                        @user.Name.Substring(0, 1).ToUpper()
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-6 pt-14">
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">@user.Name</h3>
+                        <p class="text-sm text-gray-600">@user.Email</p>
+                    </div>
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full @(user.UserType == "Speaker" ? "bg-purple-100 text-purple-800" : user.UserType == "Volunteer" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800")">
+                        @user.UserType
+                    </span>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                        <p class="text-2xl font-bold text-blue-600">@user.TotalCertificates</p>
+                        <p class="text-xs text-gray-600">Certificates</p>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                        <p class="text-2xl font-bold text-purple-600">@user.TotalEvents</p>
+                        <p class="text-xs text-gray-600">Events</p>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                @if (!string.IsNullOrEmpty(user.Phone))
+                {
+                    <p class="text-sm text-gray-600 mb-2">
+                        <i class="fas fa-phone text-gray-400 mr-2"></i>@user.Phone
+                    </p>
+                }
+
+                <!-- Status Badge -->
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs text-gray-500">
+                        <i class="fas fa-calendar text-gray-400 mr-1"></i>
+                        Joined @user.CreatedAt.ToString("MMM yyyy")
+                    </span>
+                    @if (user.IsActive)
+                    {
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                            <i class="fas fa-check-circle mr-1"></i>Active
                         </span>
-                    </td>
-                    <td class="px-6 py-4">@(user.Phone ?? "-")</td>
-                    <td class="px-6 py-4 space-x-2">
-                        <a asp-action="Details" asp-route-id="@user.Id" class="text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a asp-action="Edit" asp-route-id="@user.Id" class="text-yellow-600 hover:text-yellow-800">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@user.Id" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    }
+                    else
+                    {
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                            <i class="fas fa-times-circle mr-1"></i>Inactive
+                        </span>
+                    }
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-2">
+                    <a asp-action="Details" asp-route-id="@user.Id" 
+                       class="flex-1 px-3 py-2 text-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium">
+                        <i class="fas fa-eye mr-1"></i>View
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@user.Id" 
+                       class="flex-1 px-3 py-2 text-center bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition text-sm font-medium">
+                        <i class="fas fa-edit mr-1"></i>Edit
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@user.Id" 
+                       class="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm font-medium">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
 </div>
+
+@if (!Model.Any())
+{
+    <div class="bg-white rounded-xl shadow-lg p-12 text-center">
+        <i class="fas fa-users text-gray-300 text-6xl mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-700 mb-2">No Users Found</h3>
+        <p class="text-gray-500 mb-6">Get started by adding your first user</p>
+        <a asp-action="Create" class="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+            <i class="fas fa-plus mr-2"></i>Add User
+        </a>
+    </div>
+}

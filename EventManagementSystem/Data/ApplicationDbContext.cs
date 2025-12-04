@@ -13,6 +13,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<User> Users { get; set; }
     public DbSet<EventSchedule> EventSchedules { get; set; }
     public DbSet<Certificate> Certificates { get; set; }
+    public DbSet<EventParticipant> EventParticipants { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -39,6 +41,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithOne(es => es.Speaker)
                 .HasForeignKey(es => es.SpeakerId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(e => e.EventParticipants)
+                .WithOne(ep => ep.User)
+                .HasForeignKey(ep => ep.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         builder.Entity<EventSchedule>(entity =>
@@ -51,11 +58,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.Title).HasColumnName("Title").IsRequired().HasMaxLength(256);
             entity.Property(e => e.Description).HasColumnName("Description").IsRequired().HasMaxLength(2000);
             entity.Property(e => e.Location).HasColumnName("Location").IsRequired().HasMaxLength(500);
+            entity.Property(e => e.Tags).HasColumnName("Tags").HasMaxLength(500);
             
             entity.HasMany(e => e.Certificates)
                 .WithOne(c => c.EventSchedule)
                 .HasForeignKey(c => c.EventScheduleId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(e => e.Participants)
+                .WithOne(ep => ep.EventSchedule)
+                .HasForeignKey(ep => ep.EventScheduleId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<Certificate>(entity =>
@@ -70,6 +83,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(e => e.CertificateNumber).IsUnique();
         });
 
+        builder.Entity<EventParticipant>(entity =>
+        {
+            entity.ToTable("EventParticipants");
+            entity.Property(e => e.EventParticipantId)
+                .HasColumnName("EventParticipantId")
+                .HasDefaultValueSql("NEWID()");
+            entity.HasKey(e => e.EventParticipantId);
+            entity.HasIndex(e => new { e.EventScheduleId, e.UserId }).IsUnique();
+        });
 
         SeedData(builder);
     }
@@ -80,18 +102,32 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             new User
             {
                 Id = Guid.NewGuid(),
-                Email = "admin@example.com",
-                Name = "Admin User",
+                Email = "admin@eventms.com",
+                Name = "System Administrator",
                 UserType = UserType.User,
+                IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             },
             new User
             {
                 Id = Guid.NewGuid(),
-                Email = "speaker@example.com",
-                Name = "John Speaker",
+                Email = "john.speaker@eventms.com",
+                Name = "John Doe",
                 UserType = UserType.Speaker,
+                Phone = "+1234567890",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new User
+            {
+                Id = Guid.NewGuid(),
+                Email = "jane.volunteer@eventms.com",
+                Name = "Jane Smith",
+                UserType = UserType.Volunteer,
+                Phone = "+0987654321",
+                IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             }

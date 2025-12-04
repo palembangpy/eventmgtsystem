@@ -1,0 +1,129 @@
+@model List<EventManagementSystem.Models.DTO.EventScheduleDto>
+@{
+    ViewData["Title"] = "Events Management";
+    ViewData["Subtitle"] = $"Manage all events ({ViewBag.TotalCount ?? 0} total)";
+}
+
+<!-- Actions Bar -->
+<div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+        <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-3">
+            <form method="get" class="flex space-x-2">
+                <input type="text" name="search" value="@ViewBag.SearchTerm" placeholder="Search events..." 
+                       class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <div class="flex space-x-2">
+                <a href="?filter=all" class="px-4 py-2 rounded-lg transition @(ViewBag.Filter == "all" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")">
+                    All
+                </a>
+                <a href="?filter=upcoming" class="px-4 py-2 rounded-lg transition @(ViewBag.Filter == "upcoming" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")">
+                    Upcoming
+                </a>
+                <a href="?filter=past" class="px-4 py-2 rounded-lg transition @(ViewBag.Filter == "past" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")">
+                    Past
+                </a>
+            </div>
+        </div>
+
+        <a asp-action="Create" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition transform hover:scale-105">
+            <i class="fas fa-plus mr-2"></i>Create Event
+        </a>
+    </div>
+</div>
+
+<!-- Events Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @foreach (var evt in Model)
+    {
+        var statusColor = evt.Status switch {
+            "Upcoming" => "bg-blue-100 text-blue-800",
+            "Ongoing" => "bg-green-100 text-green-800",
+            "Completed" => "bg-gray-100 text-gray-800",
+            _ => "bg-red-100 text-red-800"
+        };
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+            <!-- Event Image -->
+            <div class="h-48 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 relative overflow-hidden">
+                @if (!string.IsNullOrEmpty(evt.ImageUrl))
+                {
+                    <img src="@evt.ImageUrl" alt="@evt.Title" class="w-full h-full object-cover" />
+                }
+                <div class="absolute top-4 right-4">
+                    <span class="px-3 py-1 text-xs font-bold rounded-full @statusColor backdrop-blur-sm">
+                        @evt.Status
+                    </span>
+                </div>
+                @if (evt.DaysUntilEvent >= 0 && evt.Status == "Upcoming")
+                {
+                    <div class="absolute bottom-4 left-4 bg-white bg-opacity-90 px-3 py-2 rounded-lg">
+                        <p class="text-2xl font-bold text-blue-600">@evt.DaysUntilEvent</p>
+                        <p class="text-xs text-gray-600">days left</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Event Details -->
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-2 line-clamp-2">@evt.Title</h3>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-3">@evt.Description</p>
+
+                <!-- Event Info -->
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-calendar text-blue-500 w-5"></i>
+                        <span>@evt.StartDate.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-map-marker-alt text-red-500 w-5"></i>
+                        <span class="truncate">@evt.Location</span>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-user text-purple-500 w-5"></i>
+                        <span>@(evt.SpeakerName ?? "No speaker")</span>
+                    </div>
+                </div>
+
+                <!-- Capacity Progress -->
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-600">Capacity</span>
+                        <span class="font-semibold">@evt.CurrentParticipants / @evt.MaxParticipants</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="@(evt.IsFull ? "bg-red-500" : "bg-blue-500") h-2 rounded-full transition-all" 
+                             style="width: @((evt.CurrentParticipants * 100 / evt.MaxParticipants))%"></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-2">
+                    <a asp-action="Details" asp-route-id="@evt.EventScheduleId" 
+                       class="flex-1 px-3 py-2 text-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium">
+                        <i class="fas fa-eye mr-1"></i>Details
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@evt.EventScheduleId" 
+                       class="flex-1 px-3 py-2 text-center bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition text-sm font-medium">
+                        <i class="fas fa-edit mr-1"></i>Edit
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="bg-white rounded-xl shadow-lg p-12 text-center">
+        <i class="fas fa-calendar-times text-gray-300 text-6xl mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-700 mb-2">No Events Found</h3>
+        <p class="text-gray-500 mb-6">Start by creating your first event</p>
+        <a asp-action="Create" class="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+            <i class="fas fa-plus mr-2"></i>Create Event
+        </a>
+    </div>
+}

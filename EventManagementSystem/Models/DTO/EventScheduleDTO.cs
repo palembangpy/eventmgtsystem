@@ -81,7 +81,7 @@ public record UpdateEventScheduleDto
     public string? ImageUrl { get; init; }
     [Sanitize(LogicalMaxLength = 100)]
     public string? Tags { get; init; }
-    public int? SpeakerId { get; init; }    
+    public Guid? SpeakerId { get; init; }    
     [Required]
     [EnumDataType(typeof(EventStatus), ErrorMessage = "Status tidak valid")]
     public EventStatus Status { get; init; }

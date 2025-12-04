@@ -57,4 +57,5 @@ public record UpdateUserDto
     [Url(ErrorMessage = "Format URL foto tidak valid")]
     [Sanitize(LogicalMaxLength = 255)]
     public string? ProfilePicture { get; init; }
+    public bool IsActive { get; init; }
 }

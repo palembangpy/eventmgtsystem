@@ -1,0 +1,68 @@
+@model EventManagementSystem.Models.DTO.UserDto
+@{
+    ViewData["Title"] = "Delete User";
+    ViewData["Subtitle"] = "Confirm user deletion";
+}
+
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="text-center mb-8">
+            <div class="mx-auto w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Delete User Confirmation</h3>
+            <p class="text-gray-600">Are you sure you want to delete this user? This action cannot be undone.</p>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-6 mb-6">
+            <div class="flex items-center mb-4">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xl mr-4">
+                    @Model.Name.Substring(0, 1).ToUpper()
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold text-gray-800">@Model.Name</h4>
+                    <p class="text-sm text-gray-600">@Model.Email</p>
+                    <span class="inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full @(Model.UserType == "Speaker" ? "bg-purple-100 text-purple-800" : Model.UserType == "Volunteer" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800")">
+                        @Model.UserType
+                    </span>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-200 pt-4 space-y-2">
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Total Certificates:</span>
+                    <span class="font-semibold text-gray-800">@Model.TotalCertificates</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Total Events:</span>
+                    <span class="font-semibold text-gray-800">@Model.TotalEvents</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Member Since:</span>
+                    <span class="font-semibold text-gray-800">@Model.CreatedAt.ToString("MMM dd, yyyy")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg mb-6">
+            <div class="flex">
+                <i class="fas fa-info-circle text-yellow-600 mt-1 mr-3"></i>
+                <div class="text-sm text-yellow-800">
+                    <p class="font-semibold mb-1">Important Notice:</p>
+                    <p>Deleting this user will deactivate their account but preserve all associated data including certificates and event history.</p>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Delete" method="post">
+            <div class="flex justify-end space-x-3">
+                <a asp-action="Index" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+                    <i class="fas fa-times mr-2"></i>Cancel
+                </a>
+                <button type="submit" class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                    <i class="fas fa-trash mr-2"></i>Confirm Delete
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

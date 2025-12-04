@@ -1,93 +1,153 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-gray-100">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Event Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100">
-    <div class="flex h-screen overflow-hidden">
+<body class="h-full">
+    <div class="min-h-full">
         <!-- Sidebar -->
-        <aside class="w-64 bg-gray-800 text-white flex-shrink-0">
-            <div class="p-4 border-b border-gray-700">
-                <h1 class="text-xl font-bold">Event System</h1>
+        <div class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-gray-900 to-gray-800 transform transition-transform duration-300" id="sidebar">
+            <!-- Logo -->
+            <div class="flex items-center justify-center h-20 border-b border-gray-700">
+                <h1 class="text-2xl font-bold text-white">
+                    <i class="fas fa-calendar-check text-blue-400 mr-2"></i>EMS
+                </h1>
             </div>
-            <nav class="p-4">
-                <ul class="space-y-2">
-                    <li>
-                        <a asp-controller="Home" asp-action="Index" class="flex items-center p-3 rounded hover:bg-gray-700 transition">
-                            <i class="fas fa-home mr-3"></i> Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Users" asp-action="Index" class="flex items-center p-3 rounded hover:bg-gray-700 transition">
-                            <i class="fas fa-users mr-3"></i> Users
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Events" asp-action="Index" class="flex items-center p-3 rounded hover:bg-gray-700 transition">
-                            <i class="fas fa-calendar mr-3"></i> Events
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Certificates" asp-action="Index" class="flex items-center p-3 rounded hover:bg-gray-700 transition">
-                            <i class="fas fa-certificate mr-3"></i> Certificates
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
 
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Top Navigation -->
-            <header class="bg-white shadow-sm">
-                <div class="flex items-center justify-between p-4">
-                    <h2 class="text-2xl font-semibold text-gray-800">@ViewData["Title"]</h2>
-                    <div class="flex items-center space-x-4">
-                        @if (User.Identity?.IsAuthenticated ?? false)
-                        {
-                            <span class="text-gray-600">@User.Identity.Name</span>
+            <!-- Navigation -->
+            <nav class="mt-8 px-4 space-y-2">
+                <a asp-controller="Home" asp-action="Index" class="nav-link group flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200">
+                    <i class="fas fa-home mr-3 text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+                
+                <a asp-controller="Users" asp-action="Index" class="nav-link group flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200">
+                    <i class="fas fa-users mr-3 text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Users</span>
+                </a>
+                
+                <a asp-controller="Events" asp-action="Index" class="nav-link group flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200">
+                    <i class="fas fa-calendar-alt mr-3 text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Events</span>
+                </a>
+                
+                <a asp-controller="Certificates" asp-action="Index" class="nav-link group flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200">
+                    <i class="fas fa-certificate mr-3 text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Certificates</span>
+                </a>
+
+                <div class="border-t border-gray-700 my-4"></div>
+
+                <a asp-controller="Events" asp-action="Calendar" class="nav-link group flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200">
+                    <i class="fas fa-calendar mr-3 text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Calendar</span>
+                </a>
+
+                <a asp-controller="Certificates" asp-action="Verify" class="nav-link group flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200">
+                    <i class="fas fa-check-circle mr-3 text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Verify Certificate</span>
+                </a>
+            </nav>
+
+            <!-- User Profile -->
+            @if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <div class="absolute bottom-0 w-full p-4 border-t border-gray-700">
+                    <div class="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                            @User.Identity.Name?.Substring(0, 1).ToUpper()
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate">@User.Identity.Name</p>
                             <form asp-controller="Account" asp-action="Logout" method="post" class="inline">
-                                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                <button type="submit" class="text-xs text-gray-400 hover:text-white transition">
+                                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
                                 </button>
                             </form>
-                        }
-                        else
-                        {
-                            <a asp-controller="Account" asp-action="Login" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                                Login
-                            </a>
-                        }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Main Content -->
+        <div class="pl-64">
+            <!-- Top Bar -->
+            <header class="bg-white shadow-sm sticky top-0 z-40">
+                <div class="flex items-center justify-between px-8 py-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">@ViewData["Title"]</h2>
+                        <p class="text-sm text-gray-500 mt-1">@ViewData["Subtitle"]</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        <button class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-cog text-xl"></i>
+                        </button>
                     </div>
                 </div>
             </header>
 
-            <!-- Main Content Area -->
-            <main class="flex-1 overflow-y-auto p-6">
+            <!-- Content Area -->
+            <main class="p-8">
+                <!-- Alert Messages -->
                 @if (TempData["Success"] != null)
                 {
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                        @TempData["Success"]
+                    <div class="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg animate-fade-in">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-400 text-xl mr-3"></i>
+                            <p class="text-green-800 font-medium">@TempData["Success"]</p>
+                        </div>
                     </div>
                 }
                 @if (TempData["Error"] != null)
                 {
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        @TempData["Error"]
+                    <div class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg animate-fade-in">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle text-red-400 text-xl mr-3"></i>
+                            <p class="text-red-800 font-medium">@TempData["Error"]</p>
+                        </div>
                     </div>
                 }
+
                 @RenderBody()
             </main>
         </div>
     </div>
 
+    <style>
+        @@keyframes fade-in {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fade-in 0.3s ease-out; }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
