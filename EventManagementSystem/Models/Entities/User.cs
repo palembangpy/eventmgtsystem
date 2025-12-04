@@ -14,6 +14,7 @@ public class User
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public virtual ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
     public virtual ICollection<EventSchedule> EventsAsSpeaker { get; set; } = new List<EventSchedule>();
+    public virtual ICollection<EventParticipant> EventParticipants { get; set; } = new List<EventParticipant>();
 }
 
 public enum UserType

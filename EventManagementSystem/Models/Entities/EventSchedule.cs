@@ -10,6 +10,7 @@ public class EventSchedule
     public string Location { get; set; } = string.Empty;
     public int MaxParticipants { get; set; }
     public string? ImageUrl { get; set; }
+    public string? Tags { get; set; }
     public Guid SpeakerId { get; set; }
     public EventStatus Status { get; set; } = EventStatus.Upcoming;
     public bool IsActive { get; set; } = true;

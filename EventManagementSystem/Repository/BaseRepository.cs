@@ -1,20 +1,20 @@
 namespace EventManagementSystem.Repository;
 using Microsoft.EntityFrameworkCore;
 using EventManagementSystem.Data;
-using EventManagementSystem.Repository;
+using EventManagementSystem.Repository.Interfaces;
 
-public class Repository<T> : IRepository<T> where T : class
+public class BaseRepository<T> : IBaseRepository<T> where T : class
 {
     protected readonly ApplicationDbContext _context;
     protected readonly DbSet<T> _dbSet;
-    public Repository(ApplicationDbContext context)
+    public BaseRepository(ApplicationDbContext context)
     {
         _context = context;
         _dbSet = context.Set<T>();
     }
     public virtual async Task<IEnumerable<T>> GetAllAsync()
         => await _dbSet.ToListAsync();
-    public virtual async Task<T?> GetByIdAsync(int id)
+    public virtual async Task<T?> GetByIdAsync(Guid id)
         => await _dbSet.FindAsync(id);
     public virtual async Task<T> AddAsync(T entity)
     {
@@ -27,7 +27,7 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet.Update(entity);
         await _context.SaveChangesAsync();
     }
-    public virtual async Task DeleteAsync(int id)
+    public virtual async Task DeleteAsync(Guid id)
     {
         var entity = await GetByIdAsync(id);
         if (entity != null)
@@ -36,7 +36,7 @@ public class Repository<T> : IRepository<T> where T : class
             await _context.SaveChangesAsync();
         }
     }
-    public virtual async Task<bool> ExistsAsync(int id)
+    public virtual async Task<bool> ExistsAsync(Guid id)
         => await GetByIdAsync(id) != null;
     public virtual async Task<int> CountAsync()
         => await _dbSet.CountAsync();
