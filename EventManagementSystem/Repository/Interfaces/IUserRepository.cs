@@ -10,4 +10,5 @@ public interface IUserRepository : IBaseRepository<User>
     Task<IEnumerable<User>> GetActiveUsersAsync();
     Task<bool> EmailExistsAsync(string email, Guid? excludeId = null);
     Task<Dictionary<string, int>> GetUserCountByTypeAsync();
+    Task<bool?> IsUserActiveAsync(string email);
 }

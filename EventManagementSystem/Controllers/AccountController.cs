@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using EventManagementSystem.Models.Entities;
 using EventManagementSystem.Models.ViewModels;
+using EventManagementSystem.Services.Interfaces;
+using EventManagementSystem.Models.DTO;
 
 namespace EventManagementSystem.Controllers;
 
@@ -9,16 +11,19 @@ public class AccountController : Controller
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserService _userService;
     private readonly ILogger<AccountController> _logger;
 
     public AccountController(
         SignInManager<ApplicationUser> signInManager,
         UserManager<ApplicationUser> userManager,
-        ILogger<AccountController> logger)
+        ILogger<AccountController> logger,
+        IUserService service)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _logger = logger;
+        _userService = service;
     }
 
     [HttpGet]
@@ -36,6 +41,19 @@ public class AccountController : Controller
 
         if (!ModelState.IsValid)
             return View(model);
+
+        var isActive = await _userService.IsUserActiveAsync(model.Email);
+        if (isActive == null)
+        {
+            ModelState.AddModelError(string.Empty, "User does not exist.");
+            return View(model);
+        }
+
+        if (isActive == false)
+        {
+            ModelState.AddModelError(string.Empty, "Your account is inactive.");
+            return View(model);
+        }
 
         var result = await _signInManager.PasswordSignInAsync(
             model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
@@ -81,6 +99,19 @@ public class AccountController : Controller
         {
             _logger.LogInformation("User created a new account");
             await _signInManager.SignInAsync(user, isPersistent: false);
+
+            var existingUser = await _userService.EmailExistsAsync(user.Email);
+            if (!existingUser)
+            {
+                await _userService.CreateUserAsync(new CreateUserDto
+                {
+                    Name = user.FullName,
+                    Email = user.Email,
+                    UserType = UserType.User
+                });
+            }
+
+
             return RedirectToLocal(returnUrl);
         }
 
@@ -126,7 +157,7 @@ public class AccountController : Controller
         }
 
         var result = await _signInManager.ExternalLoginSignInAsync(
-            info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: false);
 
         if (result.Succeeded)
         {
@@ -160,6 +191,18 @@ public class AccountController : Controller
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 _logger.LogInformation($"User created account using {info.LoginProvider}");
+            
+                var existingUser = await _userService.EmailExistsAsync(user.Email);
+                if (!existingUser)
+                {
+                    await _userService.CreateUserAsync(new CreateUserDto
+                    {
+                        Name = user.FullName,
+                        Email = user.Email,
+                        UserType = UserType.User
+                    });
+                }
+
                 return RedirectToLocal(returnUrl);
             }
         }
@@ -176,4 +219,4 @@ public class AccountController : Controller
             return Redirect(returnUrl);
         return RedirectToAction("Index", "Home");
     }
-}
+}/*  */

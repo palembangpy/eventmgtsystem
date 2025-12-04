@@ -15,4 +15,12 @@ namespace EventManagementSystem.Models.ViewModels
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
     }
+
+    public class LoginCheckViewModel
+    {
+        [Required(ErrorMessage = "Email wajib diisi")]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+    }
 }

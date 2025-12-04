@@ -1,0 +1,203 @@
+@model EventManagementSystem.Models.DTO.EventScheduleDto
+@{
+    ViewData["Title"] = "Event Details";
+    ViewData["Subtitle"] = Model.Title;
+}
+
+<div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Event Header Card -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="h-64 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 relative">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="@Model.Title" class="w-full h-full object-cover" />
+                    }
+                    <div class="absolute top-4 right-4">
+                        <span class="px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm @(Model.Status == "Upcoming" ? "bg-blue-100 text-blue-800" : Model.Status == "Ongoing" ? "bg-green-100 text-green-800" : Model.Status == "Completed" ? "bg-gray-100 text-gray-800" : "bg-red-100 text-red-800")">
+                            @Model.Status
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">@Model.Title</h2>
+                    <p class="text-gray-600 leading-relaxed mb-6">@Model.Description</p>
+
+                    @if (!string.IsNullOrEmpty(Model.Tags))
+                    {
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            @foreach (var tag in Model.Tags.Split(','))
+                            {
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">
+                                    #@tag.Trim()
+                                </span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Event Details -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>Event Information
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-calendar text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Start Date</p>
+                            <p class="font-semibold text-gray-800">@Model.StartDate.ToString("dddd, MMMM dd, yyyy")</p>
+                            <p class="text-sm text-gray-500">@Model.StartDate.ToString("hh:mm tt")</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-calendar-check text-purple-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">End Date</p>
+                            <p class="font-semibold text-gray-800">@Model.EndDate.ToString("dddd, MMMM dd, yyyy")</p>
+                            <p class="text-sm text-gray-500">@Model.EndDate.ToString("hh:mm tt")</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-map-marker-alt text-red-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Location</p>
+                            <p class="font-semibold text-gray-800">@Model.Location</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-green-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Capacity</p>
+                            <p class="font-semibold text-gray-800">@Model.CurrentParticipants / @Model.MaxParticipants</p>
+                            @if (Model.IsFull)
+                            {
+                                <span class="text-xs text-red-600 font-semibold">Event Full</span>
+                            }
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.SpeakerName))
+                    {
+                        <div class="flex items-start space-x-3">
+                            <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-microphone text-yellow-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Speaker</p>
+                                <p class="font-semibold text-gray-800">@Model.SpeakerName</p>
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.DaysUntilEvent >= 0 && Model.Status == "Upcoming")
+                    {
+                        <div class="flex items-start space-x-3">
+                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-clock text-orange-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Time Until Event</p>
+                                <p class="font-semibold text-gray-800">@Model.DaysUntilEvent days</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Capacity Progress -->
+                <div class="mt-8">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-600 font-medium">Event Capacity</span>
+                        <span class="font-bold text-gray-800">@((Model.CurrentParticipants * 100 / Model.MaxParticipants))%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div class="@(Model.IsFull ? "bg-red-500" : "bg-blue-500") h-3 rounded-full transition-all duration-500" 
+                             style="width: @((Model.CurrentParticipants * 100 / Model.MaxParticipants))%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Quick Stats -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h4 class="text-lg font-bold text-gray-800 mb-4">Quick Stats</h4>
+                <div class="space-y-4">
+                    <div class="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
+                        <p class="text-sm text-blue-600 mb-1">Event ID</p>
+                        <p class="text-2xl font-bold text-blue-700">#@Model.EventScheduleId</p>
+                    </div>
+                    <div class="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
+                        <p class="text-sm text-purple-600 mb-1">Participants</p>
+                        <p class="text-2xl font-bold text-purple-700">@Model.CurrentParticipants</p>
+                    </div>
+                    @if (Model.DaysUntilEvent >= 0 && Model.Status == "Upcoming")
+                    {
+                        <div class="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg">
+                            <p class="text-sm text-orange-600 mb-1">Days Until</p>
+                            <p class="text-2xl font-bold text-orange-700">@Model.DaysUntilEvent</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h4 class="text-lg font-bold text-gray-800 mb-4">Actions</h4>
+                <div class="space-y-2">
+                    <a asp-action="Edit" asp-route-id="@Model.EventScheduleId" class="block w-full px-4 py-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-center font-medium">
+                        <i class="fas fa-edit mr-2"></i>Edit Event
+                    </a>
+                    <a asp-controller="Certificates" asp-action="ByEvent" asp-route-eventId="@Model.EventScheduleId" class="block w-full px-4 py-3 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition text-center font-medium">
+                        <i class="fas fa-certificate mr-2"></i>View Certificates
+                    </a>
+                    <a asp-controller="Certificates" asp-action="BulkGenerate" asp-route-eventId="@Model.EventScheduleId" class="block w-full px-4 py-3 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition text-center font-medium">
+                        <i class="fas fa-layer-group mr-2"></i>Generate Certificates
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.EventScheduleId" class="block w-full px-4 py-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-center font-medium">
+                        <i class="fas fa-trash mr-2"></i>Delete Event
+                    </a>
+                </div>
+            </div>
+
+            <!-- Status Badge -->
+            @if (Model.IsActive)
+            {
+                <div class="bg-green-50 border-2 border-green-200 rounded-xl p-6 text-center">
+                    <i class="fas fa-check-circle text-green-500 text-3xl mb-2"></i>
+                    <p class="text-sm font-semibold text-green-800">Event Active</p>
+                </div>
+            }
+            else
+            {
+                <div class="bg-red-50 border-2 border-red-200 rounded-xl p-6 text-center">
+                    <i class="fas fa-times-circle text-red-500 text-3xl mb-2"></i>
+                    <p class="text-sm font-semibold text-red-800">Event Inactive</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="mt-6">
+        <a asp-action="Index" class="inline-block px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Events
+        </a>
+    </div>
+</div>

@@ -1,24 +1,24 @@
-@model EventManagementSystem.Models.DTO.CreateEventScheduleDto
+@model EventManagementSystem.Models.DTO.UpdateEventScheduleDto
 @{
-    ViewData["Title"] = "Create Event";
-    ViewData["Subtitle"] = "Add a new event to the system";
+    ViewData["Title"] = "Edit Event";
+    ViewData["Subtitle"] = "Update event information";
 }
 
 <div class="max-w-4xl mx-auto">
     <div class="bg-white rounded-xl shadow-lg p-8">
-        <form asp-action="Create" method="post">
+        <form asp-action="Edit" asp-route-id="@ViewBag.EventId" method="post">
             <div asp-validation-summary="ModelOnly" class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg"></div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="md:col-span-2">
                     <label asp-for="Title" class="block text-sm font-medium text-gray-700 mb-2">Event Title *</label>
-                    <input asp-for="Title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Enter event title" />
+                    <input asp-for="Title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
                     <span asp-validation-for="Title" class="text-red-600 text-sm mt-1"></span>
                 </div>
 
                 <div class="md:col-span-2">
                     <label asp-for="Description" class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
-                    <textarea asp-for="Description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Describe your event..."></textarea>
+                    <textarea asp-for="Description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"></textarea>
                     <span asp-validation-for="Description" class="text-red-600 text-sm mt-1"></span>
                 </div>
 
@@ -36,47 +36,62 @@
 
                 <div>
                     <label asp-for="Location" class="block text-sm font-medium text-gray-700 mb-2">Location *</label>
-                    <input asp-for="Location" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Event venue or online link" />
+                    <input asp-for="Location" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
                     <span asp-validation-for="Location" class="text-red-600 text-sm mt-1"></span>
                 </div>
 
                 <div>
                     <label asp-for="MaxParticipants" class="block text-sm font-medium text-gray-700 mb-2">Max Participants *</label>
-                    <input asp-for="MaxParticipants" type="number" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="100" />
+                    <input asp-for="MaxParticipants" type="number" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
                     <span asp-validation-for="MaxParticipants" class="text-red-600 text-sm mt-1"></span>
                 </div>
 
                 <div>
-                    <label asp-for="SpeakerId" class="block text-sm font-medium text-gray-700 mb-2">Speaker (Optional)</label>
+                    <label asp-for="SpeakerId" class="block text-sm font-medium text-gray-700 mb-2">Speaker</label>
                     <select asp-for="SpeakerId" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-                        <option value="">-- Select Speaker --</option>
+                        <option value="">-- No Speaker --</option>
                         @foreach (var speaker in ViewBag.Speakers)
                         {
                             <option value="@speaker.Id">@speaker.Name</option>
                         }
                     </select>
-                    <span asp-validation-for="SpeakerId" class="text-red-600 text-sm mt-1"></span>
                 </div>
 
                 <div>
-                    <label asp-for="ImageUrl" class="block text-sm font-medium text-gray-700 mb-2">Image URL (Optional)</label>
-                    <input asp-for="ImageUrl" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="https://example.com/image.jpg" />
-                    <span asp-validation-for="ImageUrl" class="text-red-600 text-sm mt-1"></span>
+                    <label asp-for="Status" class="block text-sm font-medium text-gray-700 mb-2">Status *</label>
+                    <select asp-for="Status" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                        @foreach (var status in ViewBag.EventStatuses)
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Status" class="text-red-600 text-sm mt-1"></span>
+                </div>
+
+                <div>
+                    <label asp-for="ImageUrl" class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                    <input asp-for="ImageUrl" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
                 </div>
 
                 <div class="md:col-span-2">
-                    <label asp-for="Tags" class="block text-sm font-medium text-gray-700 mb-2">Tags (Optional)</label>
-                    <input asp-for="Tags" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="tech, workshop, networking (comma separated)" />
-                    <span asp-validation-for="Tags" class="text-red-600 text-sm mt-1"></span>
+                    <label asp-for="Tags" class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+                    <input asp-for="Tags" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="flex items-center">
+                        <input asp-for="IsActive" type="checkbox" class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+                        <span class="ml-3 text-sm font-medium text-gray-700">Active Event</span>
+                    </label>
                 </div>
             </div>
 
             <div class="flex justify-end space-x-3 mt-8">
-                <a asp-action="Index" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+                <a asp-action="Details" asp-route-id="@ViewBag.EventId" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
                     Cancel
                 </a>
                 <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition transform hover:scale-105 font-medium">
-                    <i class="fas fa-plus mr-2"></i>Create Event
+                    <i class="fas fa-save mr-2"></i>Save Changes
                 </button>
             </div>
         </form>

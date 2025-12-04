@@ -9,7 +9,7 @@ public class User
     public string? ProfilePicture { get; set; }
     public string? Phone { get; set; }
     public string? Address { get; set; }
-    public bool IsActive { get; set; } = true;
+    public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public virtual ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();

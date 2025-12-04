@@ -30,6 +30,11 @@ public class UserService : IUserService
         var user = await _userRepo.GetByIdAsync(id);
         return user != null ? MapToDto(user) : null;
     }
+    public async Task<UserDto?> GetUserByEmailAsync(string email)
+    {
+        var user = await _userRepo.GetByEmailAsync(email);
+        return user != null ? MapToDto(user) : null;
+    }
 
     public async Task<UserDto> CreateUserAsync(CreateUserDto dto)
     {
@@ -96,6 +101,10 @@ public class UserService : IUserService
 
     public async Task<Dictionary<string, int>> GetUserStatsAsync()
         => await _userRepo.GetUserCountByTypeAsync();
+
+    public async Task<bool?> IsUserActiveAsync(string email)
+        => await _userRepo.IsUserActiveAsync(email);
+
 
     private UserDto MapToDto(User user) => new()
     {

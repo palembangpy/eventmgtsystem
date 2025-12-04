@@ -11,6 +11,7 @@ namespace EventManagementSystem.Models.ViewModels
         [Required(ErrorMessage = "Email wajib diisi")]
         [EmailAddress]
         [Display(Name = "Email")]
+        [UniqueEmail]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password wajib diisi")]

@@ -63,4 +63,10 @@ public class UserRepository : BaseRepository<User>, IUserRepository
             .Include(u => u.EventsAsSpeaker)
             .Include(u => u.EventParticipants)
             .FirstOrDefaultAsync(u => u.Id == id);
+
+    public async Task<bool?> IsUserActiveAsync(string email)
+    {
+        var user = await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
+        return user?.IsActive;  
+    }
 }

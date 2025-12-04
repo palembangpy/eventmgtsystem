@@ -25,6 +25,7 @@ public record CreateUserDto
     [StrictEmail]
     [StringLength(150)]
     [Sanitize(LogicalMaxLength = 150)]
+    [UniqueEmail]
     public string Email { get; init; } = string.Empty;
     [Required(ErrorMessage = "Name wajib diisi")]
     [StringLength(150, MinimumLength = 2)]
