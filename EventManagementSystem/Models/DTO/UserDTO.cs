@@ -44,11 +44,9 @@ public record CreateUserDto
 
 public record UpdateUserDto
 {
-    [Required(ErrorMessage = "Name wajib diisi")]
     [StringLength(150, MinimumLength = 2)]
     [Sanitize(LogicalMaxLength = 150)]
     public string Name { get; init; } = string.Empty;
-    [Required(ErrorMessage = "Tipe User wajib diisi")]
     [EnumDataType(typeof(UserType), ErrorMessage = "Tipe User tidak valid")]
     public UserType UserType { get; init; }
     [Phone]

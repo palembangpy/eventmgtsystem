@@ -175,8 +175,12 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult EmailVerified()
+    public IActionResult EmailVerified(string? returnUrl = null)
     {
+        ViewData["ReturnUrl"] = string.IsNullOrEmpty(returnUrl)
+            ? Url.Action("Index", "Home")
+            : returnUrl;
+
         return View();
     }
 
@@ -187,7 +191,7 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> VerifyEmail(string sig)
+    public async Task<IActionResult> VerifyEmail(string sig, string? returnUrl = null)
     {
         if (string.IsNullOrWhiteSpace(sig))
         {
@@ -237,14 +241,19 @@ public class AccountController : Controller
             {
                 await _userService.UpdateUserAsync(existingUser.Id, new UpdateUserDto
                 {
+                    Name = user.FullName,
                     IsActive = true
                 });
             }
 
             await _emailService.SendWelcomeEmailAsync(user.Email!, user.FullName);
 
+            var safeReturnUrl = Url.IsLocalUrl(returnUrl)
+                            ? returnUrl
+                            : Url.Action("Index", "Home");
+
             TempData["Success"] = "Email verified successfully!";
-            return RedirectToAction(nameof(EmailVerified));
+            return RedirectToAction(nameof(EmailVerified), new { returnUrl });
         }
         catch (SecurityException)
         {

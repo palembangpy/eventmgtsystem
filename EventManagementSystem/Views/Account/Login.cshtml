@@ -2,6 +2,9 @@
 @{
     ViewData["Title"] = "Login";
     Layout = null;
+    var safeReturnUrl = Url.IsLocalUrl(ViewData["ReturnUrl"]?.ToString())
+        ? ViewData["ReturnUrl"]?.ToString()
+        : Url.Action("Index", "Home");
 }
 
 <!DOCTYPE html>
@@ -44,7 +47,7 @@
                     <!-- Google -->
                     <form asp-controller="Account" asp-action="ExternalLogin" method="post">
                         <input type="hidden" name="provider" value="Google" />
-                        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                        <input type="hidden" name="returnUrl" value="@safeReturnUrl" />
                         <button type="submit"
                             class="w-full flex items-center justify-center px-4 py-3 border rounded-xl hover:border-blue-500 hover:shadow-md transition">
                             <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5 mr-3" />
@@ -55,7 +58,7 @@
                     <!-- GitHub -->
                     <form asp-controller="Account" asp-action="ExternalLogin" method="post">
                         <input type="hidden" name="provider" value="GitHub" />
-                        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                        <input type="hidden" name="returnUrl" value="@safeReturnUrl" />
                         <button type="submit"
                             class="w-full flex items-center justify-center px-4 py-3 bg-gray-900 text-white rounded-xl hover:bg-black hover:shadow-md transition">
                             <i class="fab fa-github text-xl mr-3"></i>
