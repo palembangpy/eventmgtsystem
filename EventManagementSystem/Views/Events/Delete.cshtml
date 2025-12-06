@@ -1,0 +1,72 @@
+@model EventManagementSystem.Models.DTO.EventScheduleDto
+@{
+    ViewData["Title"] = "Delete Event";
+    ViewData["Subtitle"] = "Confirm event deletion";
+}
+
+<div class="max-w-3xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="text-center mb-8">
+            <div class="mx-auto w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Delete Event Confirmation</h3>
+            <p class="text-gray-600">This action will permanently deactivate this event. All associated data will be preserved.</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 mb-6">
+            <div class="flex items-start space-x-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 rounded-lg flex-shrink-0"></div>
+                <div class="flex-1">
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">@Model.Title</h4>
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">@Model.Description</p>
+                    
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-calendar text-blue-500 mr-2"></i>
+                            @Model.StartDate.ToString("MMM dd, yyyy")
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+                            @Model.Location
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-users text-green-500 mr-2"></i>
+                            @Model.CurrentParticipants / @Model.MaxParticipants
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-user text-purple-500 mr-2"></i>
+                            @(Model.SpeakerName ?? "No speaker")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg mb-6">
+            <div class="flex">
+                <i class="fas fa-info-circle text-yellow-600 mt-1 mr-3"></i>
+                <div class="text-sm text-yellow-800">
+                    <p class="font-semibold mb-1">What happens when you delete this event?</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>The event will be marked as inactive</li>
+                        <li>All certificates associated with this event will be preserved</li>
+                        <li>Participant data will remain in the system</li>
+                        <li>This action can be reversed by reactivating the event</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Delete" method="post">
+            <div class="flex justify-end space-x-3">
+                <a asp-action="Details" asp-route-id="@Model.EventScheduleId" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+                    <i class="fas fa-times mr-2"></i>Cancel
+                </a>
+                <button type="submit" class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                    <i class="fas fa-trash mr-2"></i>Confirm Delete
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

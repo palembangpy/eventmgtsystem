@@ -16,9 +16,11 @@ public static class SanitizerEngine
     {
         try
         {
+            
             if (string.IsNullOrWhiteSpace(input))
                 return string.Empty;
 
+            input = WebUtility.UrlDecode(input);
             string original = input.Trim();
 
             if (Regex.IsMatch(original, @"(?i)(%25){0,}\s*%3C|%3C|%253C|%u003C"))

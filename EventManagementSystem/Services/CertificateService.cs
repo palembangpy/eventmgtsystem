@@ -155,6 +155,7 @@ public class CertificateService : ICertificateService
     private CertificateDto MapToDto(Certificate cert) => new()
     {
         CertificateId = cert.CertificateId,
+        UserId = cert.User.Id,
         UserName = cert.User.Name,
         UserEmail = cert.User.Email,
         EventTitle = cert.EventSchedule.Title,

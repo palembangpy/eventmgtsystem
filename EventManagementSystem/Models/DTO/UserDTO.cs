@@ -39,6 +39,7 @@ public record CreateUserDto
     public string? Phone { get; init; }
     [Sanitize(LogicalMaxLength = 255)]
     public string? Address { get; init; }
+    public bool IsActive {get;init;}
 }
 
 public record UpdateUserDto

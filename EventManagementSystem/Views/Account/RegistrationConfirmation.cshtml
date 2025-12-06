@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Registration Successful";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body class="h-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div class="min-h-full flex items-center justify-center py-12 px-4">
+        <div class="max-w-md w-full">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 text-center">
+                <div
+                    class="mx-auto w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mb-6 animate-bounce">
+                    <i class="fas fa-envelope-open-text text-white text-3xl"></i>
+                </div>
+
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Check Your Email!</h2>
+
+                <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg mb-6 text-left">
+                    <p class="text-green-800 font-medium mb-2">Registration Successful! 🎉</p>
+                    <p class="text-green-700 text-sm">
+                        We've sent a verification link to your email address. Please check your inbox and click the link
+                        to verify your account.
+                    </p>
+                </div>
+
+                <div class="bg-blue-50 rounded-xl p-6 mb-6 text-left">
+                    <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                        What to do next:
+                    </h3>
+                    <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                        <li>Check your email inbox</li>
+                        <li>Look for an email from Event Management System</li>
+                        <li>Click the verification link</li>
+                        <li>Log in to access your dashboard</li>
+                    </ol>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg mb-6 text-left">
+                    <p class="text-yellow-800 text-sm">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <strong>Didn't receive the email?</strong> Check your spam folder or
+                        <a asp-action="ResendVerificationEmail" class="text-yellow-900 underline font-semibold">
+                            click here to resend
+                        </a>
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <a asp-action="Login"
+                        class="block w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-lg transition transform hover:scale-105 font-medium">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Go to Login
+                    </a>
+                    <a href="/"
+                        class="block w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition font-medium">
+                        <i class="fas fa-home mr-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

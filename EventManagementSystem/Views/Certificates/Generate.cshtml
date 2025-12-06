@@ -1,0 +1,75 @@
+@model EventManagementSystem.Models.DTO.GenerateCertificateDto
+@{
+    ViewData["Title"] = "Generate Certificate";
+    ViewData["Subtitle"] = "Create a new certificate for a participant";
+}
+
+<div class="max-w-3xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="text-center mb-8">
+            <div class="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4">
+                <i class="fas fa-certificate text-white text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Generate Certificate</h3>
+            <p class="text-gray-600">Select a user and event to generate their certificate</p>
+        </div>
+
+        <form asp-action="Generate" method="post">
+            <div asp-validation-summary="ModelOnly" class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg"></div>
+            
+            <div class="space-y-6">
+                <div>
+                    <label asp-for="UserId" class="block text-sm font-medium text-gray-700 mb-2">Select User *</label>
+                    <select asp-for="UserId" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                        <option value="">-- Select a User --</option>
+                        @foreach (var user in ViewBag.Users)
+                        {
+                            <option value="@user.Id">@user.Name (@user.Email) - @user.UserType</option>
+                        }
+                    </select>
+                    <span asp-validation-for="UserId" class="text-red-600 text-sm mt-1"></span>
+                </div>
+
+                <div>
+                    <label asp-for="EventScheduleId" class="block text-sm font-medium text-gray-700 mb-2">Select Event *</label>
+                    <select asp-for="EventScheduleId" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                        <option value="">-- Select an Event --</option>
+                        @foreach (var evt in ViewBag.Events)
+                        {
+                            <option value="@evt.EventScheduleId">@evt.Title (@evt.StartDate.ToString("MMM dd, yyyy"))</option>
+                        }
+                    </select>
+                    <span asp-validation-for="EventScheduleId" class="text-red-600 text-sm mt-1"></span>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                    <div class="flex">
+                        <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-semibold mb-1">Certificate Generation Info:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>A unique certificate number will be generated automatically</li>
+                                <li>The certificate will be available for immediate download</li>
+                                <li>Certificate data includes user name, event details, and generation date</li>
+                                <li>Duplicate certificates for the same user-event pair are not allowed</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-8">
+                <a asp-action="Index" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+                    Cancel
+                </a>
+                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition transform hover:scale-105 font-medium">
+                    <i class="fas fa-certificate mr-2"></i>Generate Certificate
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

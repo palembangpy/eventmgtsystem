@@ -56,3 +56,6 @@ nunit-*.xml
 appsettings.json
 appsettings.Development.json
 /bin/Debug
+/Keys/private.pem
+/Keys/public.pem
+/Keys/openssl_generate.sh

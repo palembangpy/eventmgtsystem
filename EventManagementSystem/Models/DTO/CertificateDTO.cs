@@ -7,6 +7,7 @@ namespace EventManagementSystem.Models.DTO;
 public record CertificateDto
 {
     public Guid CertificateId { get; init; }
+    public Guid UserId {get; init;}
     public string UserName { get; init; } = string.Empty;
     public string UserEmail { get; init; } = string.Empty;
     public string EventTitle { get; init; } = string.Empty;

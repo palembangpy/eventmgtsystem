@@ -1,5 +1,6 @@
 namespace EventManagementSystem.Security;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Reflection;
 
@@ -30,7 +31,16 @@ public class SanitizeModelFilter : IActionFilter
                 );
 
                 if (clean == null)
-                    throw new Exception($"[SECURITY] Dangerous input blocked on field '{prop.Name}'");
+                {
+                    context.Result = new UnauthorizedObjectResult(new
+                    {
+                        error = "SECURITY_VIOLATION",
+                        field = prop.Name,
+                        message = "Dangerous input detected"
+                    });
+
+                    return;
+                }
 
                 prop.SetValue(arg, clean);
             }

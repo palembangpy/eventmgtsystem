@@ -44,7 +44,7 @@ public class UserService : IUserService
         var user = _mapper.Map<User>(dto);
         user.CreatedAt = DateTime.UtcNow;
         user.UpdatedAt = DateTime.UtcNow;
-        user.IsActive = true;
+        user.IsActive = dto.IsActive;
 
         var created = await _userRepo.AddAsync(user);
         _logger.LogInformation("User created: {UserId} - {UserName}", created.Id, created.Name);
@@ -59,6 +59,7 @@ public class UserService : IUserService
             throw new KeyNotFoundException($"User with ID {id} not found.");
 
         _mapper.Map(dto, user);
+        user.IsActive = dto.IsActive;
         user.UpdatedAt = DateTime.UtcNow;
 
         await _userRepo.UpdateAsync(user);

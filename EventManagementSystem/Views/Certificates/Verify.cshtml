@@ -1,0 +1,137 @@
+@{
+    ViewData["Title"] = "Verify Certificate";
+    ViewData["Subtitle"] = "Check if a certificate is valid";
+    Layout = "_Layout";
+}
+
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="text-center mb-8">
+            <div class="mx-auto w-20 h-20 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-shield-alt text-white text-3xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-800 mb-2">Certificate Verification</h3>
+            <p class="text-gray-600">Enter a certificate number to verify its authenticity</p>
+        </div>
+
+        <form asp-action="Verify" method="post" class="mb-8">
+            <div class="flex space-x-3">
+                <input type="text" name="certificateNumber" 
+                       placeholder="Enter certificate number (e.g., CERT-20241205-ABC12345)"
+                       class="flex-1 px-6 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-lg"
+                       value="@ViewBag.SearchTerm" />
+                <button type="submit" class="px-8 py-4 bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-xl hover:shadow-lg transition transform hover:scale-105 font-semibold">
+                    <i class="fas fa-search mr-2"></i>Verify
+                </button>
+            </div>
+        </form>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-xl mb-6 animate-fade-in">
+                <div class="flex items-center">
+                    <i class="fas fa-times-circle text-red-500 text-3xl mr-4"></i>
+                    <div>
+                        <h4 class="text-lg font-bold text-red-800 mb-1">Certificate Not Found</h4>
+                        <p class="text-red-700">@ViewBag.Error</p>
+                        <p class="text-sm text-red-600 mt-2">Please check the certificate number and try again.</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (ViewBag.Success == true && ViewBag.Certificate != null)
+        {
+            var cert = ViewBag.Certificate as EventManagementSystem.Models.DTO.CertificateDto;
+            
+            <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded-r-xl mb-6 animate-fade-in">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-check-circle text-green-500 text-4xl mr-4"></i>
+                    <div>
+                        <h4 class="text-xl font-bold text-green-800">Valid Certificate</h4>
+                        <p class="text-green-700">This certificate is authentic and verified.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-green-200 rounded-xl p-8">
+                <div class="text-center mb-6">
+                    <i class="fas fa-certificate text-green-500 text-5xl mb-4"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Certificate Details</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Certificate Number</p>
+                        <p class="font-mono font-bold text-lg text-gray-800">@cert.CertificateNumber</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Status</p>
+                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full @(cert.Status == "Downloaded" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800")">
+                            <i class="fas fa-check-circle mr-1"></i>@cert.Status
+                        </span>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Recipient Name</p>
+                        <p class="font-semibold text-gray-800">@cert.UserName</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Email</p>
+                        <p class="font-semibold text-gray-800">@cert.UserEmail</p>
+                    </div>
+
+                    <div class="md:col-span-2 p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Event Title</p>
+                        <p class="font-semibold text-gray-800">@cert.EventTitle</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Issue Date</p>
+                        <p class="font-semibold text-gray-800">@cert.GeneratedDate.ToString("MMMM dd, yyyy")</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-1">Total Downloads</p>
+                        <p class="font-semibold text-gray-800">@cert.DownloadCount times</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg text-center">
+                    <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                    <span class="text-sm text-blue-800 font-medium">
+                        This certificate was officially issued by Event Management System
+                    </span>
+                </div>
+            </div>
+        }
+
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-blue-50 p-6 rounded-xl text-center">
+                <i class="fas fa-shield-check text-blue-500 text-3xl mb-3"></i>
+                <h4 class="font-bold text-gray-800 mb-2">Secure</h4>
+                <p class="text-sm text-gray-600">All certificates are verified against our secure database</p>
+            </div>
+            <div class="bg-purple-50 p-6 rounded-xl text-center">
+                <i class="fas fa-fingerprint text-purple-500 text-3xl mb-3"></i>
+                <h4 class="font-bold text-gray-800 mb-2">Unique</h4>
+                <p class="text-sm text-gray-600">Each certificate has a unique identification number</p>
+            </div>
+            <div class="bg-green-50 p-6 rounded-xl text-center">
+                <i class="fas fa-certificate text-green-500 text-3xl mb-3"></i>
+                <h4 class="font-bold text-gray-800 mb-2">Official</h4>
+                <p class="text-sm text-gray-600">Issued by Event Management System authority</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@keyframes fade-in {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fade-in 0.3s ease-out; }
+</style>

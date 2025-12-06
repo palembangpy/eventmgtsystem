@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Email Verified";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body class="h-full bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+    <div class="min-h-full flex items-center justify-center py-12 px-4">
+        <div class="max-w-md w-full">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 text-center">
+                <div
+                    class="mx-auto w-24 h-24 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center mb-6">
+                    <i class="fas fa-check-circle text-white text-5xl"></i>
+                </div>
+
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Email Verified! ✓</h2>
+
+                <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg mb-6">
+                    <p class="text-green-800 font-medium mb-2">Success! 🎉</p>
+                    <p class="text-green-700 text-sm">
+                        Your email has been verified successfully. You now have full access to all features!
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-6 text-left">
+                    <h3 class="font-bold text-gray-800 mb-3">You can now:</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Create and manage events
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Generate certificates
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Track participants
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Access dashboard analytics
+                        </li>
+                    </ul>
+                </div>
+
+                <a asp-action="Login"
+                    class="block w-full py-3 px-4 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition transform hover:scale-105 font-medium">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
