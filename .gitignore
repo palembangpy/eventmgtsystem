@@ -22,6 +22,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+[Kl]eys/
+wwwroot/
+
 
 # .NET Core
 project.lock.json
@@ -56,6 +59,3 @@ nunit-*.xml
 appsettings.json
 appsettings.Development.json
 /bin/Debug
-/Keys/private.pem
-/Keys/public.pem
-/Keys/openssl_generate.sh
