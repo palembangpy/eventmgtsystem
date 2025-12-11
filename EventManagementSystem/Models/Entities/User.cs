@@ -19,7 +19,8 @@ public class User
 
 public enum UserType
 {
-    User = 0,
-    Volunteer = 1,
-    Speaker = 2
+    SystemAdmin = 0,  
+    User = 1,         
+    Volunteer = 2,    
+    Speaker = 3    
 }

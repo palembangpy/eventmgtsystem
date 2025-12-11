@@ -1,3 +1,4 @@
+using EventManagementSystem.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 namespace EventManagementSystem.Models.Entities;
 
@@ -5,6 +6,7 @@ public class ApplicationUser : IdentityUser
 {
     public string FullName { get; set; } = string.Empty;
     public string? ProfilePictureUrl { get; set; }
+    public SystemRole systemRole {get; set;} = SystemRole.User;
     public bool IsEmailVerified { get; set; } = false;
     public DateTime? EmailVerifiedAt { get; set; }
 

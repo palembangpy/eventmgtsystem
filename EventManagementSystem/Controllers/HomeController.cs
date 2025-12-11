@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using EventManagementSystem.Services.Interfaces;
-using EventManagementSystem.Models.ViewModels;
+using EventManagementSystem.Core.Interfaces.Services;
+using EventManagementSystem.Core.ViewModels;
 
 namespace EventManagementSystem.Controllers;
 

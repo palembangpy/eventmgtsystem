@@ -28,4 +28,44 @@
     <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="QuestPDF" Version="2025.7.4" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EventManagementSystem.Services\EventManagementSystem.Services.csproj" />
+    <ProjectReference Include="..\EventManagementSystem.Infrastructure\EventManagementSystem.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Data\**" />
+    <Compile Remove="Migrations\**" />
+    <Compile Remove="Repository\**" />
+    <Compile Remove="Services\**" />
+    <Compile Remove="Models\**" />
+    <Compile Remove="Security\**" />
+    <Compile Remove="Helper\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <EmbeddedResource Remove="Repository\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Security\**" />
+    <EmbeddedResource Remove="Helper\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Data\**" />
+    <Content Remove="Migrations\**" />
+    <Content Remove="Repository\**" />
+    <Content Remove="Services\**" />
+    <Content Remove="Models\**" />
+    <Content Remove="Security\**" />
+    <Content Remove="Helper\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Data\**" />
+    <None Remove="Migrations\**" />
+    <None Remove="Repository\**" />
+    <None Remove="Services\**" />
+    <None Remove="Models\**" />
+    <None Remove="Security\**" />
+    <None Remove="Helper\**" />
+  </ItemGroup>
 </Project>

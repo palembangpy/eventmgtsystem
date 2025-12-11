@@ -1,9 +1,9 @@
-using EventManagementSystem.Models.DTO;
-using EventManagementSystem.Services.Interfaces;
+using EventManagementSystem.Core.DTO;
+using EventManagementSystem.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventManagementSystem.Controllers;
+namespace EventManagementSystem.Web.Controllers;
 
 [Authorize]
 public class CertificatesController : Controller

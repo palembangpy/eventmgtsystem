@@ -14,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<EventSchedule> EventSchedules { get; set; }
     public DbSet<Certificate> Certificates { get; set; }
     public DbSet<EventParticipant> EventParticipants { get; set; }
+    public DbSet<Tokenizer> Tokenizers {get; set;}
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -91,6 +92,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasDefaultValueSql("NEWID()");
             entity.HasKey(e => e.EventParticipantId);
             entity.HasIndex(e => new { e.EventScheduleId, e.UserId }).IsUnique();
+        });
+
+        builder.Entity<Tokenizer>(entity =>
+        {
+            entity.ToTable("Tokenizers");
+            entity.HasKey(e => e.TokenId);
+            entity.Property(e => e.TokenId).HasColumnName("TokenId").HasDefaultValueSql("NEWID()");
+            entity.Property(e => e.TokenName).HasColumnName("TokenName").IsRequired().HasMaxLength(100);
+            entity.Property(e => e.TokenHash).HasColumnName("TokenHash").IsRequired().HasMaxLength(500);
+            entity.Property(e => e.Salt).HasColumnName("Salt").IsRequired().HasMaxLength(100);
+            entity.HasIndex(e => e.TokenHash).IsUnique();
         });
 
         SeedData(builder);

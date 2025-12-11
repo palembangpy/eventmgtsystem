@@ -1,24 +1,26 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using EventManagementSystem.Data;
-using EventManagementSystem.Models.Entities;
-using EventManagementSystem.Security;
-using EventManagementSystem.Services.Interfaces;
-using EventManagementSystem.Services;
-using EventManagementSystem.Repository;
-using EventManagementSystem.Repository.Interfaces;
-using EventManagementSystem.Helper.SignatureEmail.Interfaces;
-using EventManagementSystem.Helper.SignatureEmail;
-
+using EventManagementSystem.Infrastructure.Data;
+using EventManagementSystem.Core.Models.Entities;
+using EventManagementSystem.Core.Security;
+using EventManagementSystem.Core.Interfaces.Services;
+using EventManagementSystem.Services.Services;
+using EventManagementSystem.Infrastructure.Repository;
+using EventManagementSystem.Core.Interfaces.Repository;
+using EventManagementSystem.Core.Models.Custom;
+using EventManagementSystem.Services.Helper.SignatureEmail.Interfaces;
+using EventManagementSystem.Services.Helper.SignatureEmail;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Add services to the container
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString)
+);
 
 // builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -64,6 +66,25 @@ builder.Services.AddAuthentication()
     //     options.Scope.Add("read:user");
     //     options.Scope.Add("user:email");
     // });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SystemAdminOnly", policy =>
+        policy.RequireAssertion(context =>
+        {
+            var user = context.User;
+            if (user.Identity?.IsAuthenticated != true) return false;
+            var userManager = context.Resource as UserManager<ApplicationUser>;
+            return true;
+        }));
+    
+    options.AddPolicy("AdminOrSpeaker", policy =>
+        policy.RequireAssertion(context => 
+            context.User.IsInRole("SystemAdmin") || context.User.IsInRole("Speaker")));
+    
+    options.AddPolicy("AuthenticatedUser", policy =>
+        policy.RequireAuthenticatedUser());
+});
 
 // Configure cookie settings
 builder.Services.ConfigureApplicationCookie(options =>
@@ -134,6 +155,24 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.Configure<Cors>(
+    builder.Configuration.GetSection("Cors"));
+
+var corsSettings = builder.Configuration
+    .GetSection("Cors")
+    .Get<Cors>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLandingPage", policy =>
+    {
+        policy.WithOrigins(corsSettings.AllowedOrigins)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
 
 // builder.Services.AddHttpsRedirection(options =>
 // {
@@ -160,6 +199,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseCookiePolicy(); 
 app.UseSession();
+app.UseCors("AllowLandingPage");
 
 app.UseAuthentication();
 app.UseAuthorization();

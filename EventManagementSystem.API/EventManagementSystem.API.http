@@ -1,0 +1,8 @@
+
+GET {{API_HostAddress}}/api
+Accept: application/json
+
+###
+
+GET {{API_HostAddress}}/protected
+Accept: application/json

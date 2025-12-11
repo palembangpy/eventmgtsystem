@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using EventManagementSystem.Models.Entities;
-using EventManagementSystem.Models.ViewModels;
-using EventManagementSystem.Services.Interfaces;
-using EventManagementSystem.Models.DTO;
-using EventManagementSystem.Helper.SignatureEmail.Interfaces;
+using EventManagementSystem.Core.Models.Entities;
+using EventManagementSystem.Core.ViewModels;
+using EventManagementSystem.Core.Interfaces.Services;
+using EventManagementSystem.Core.DTO;
+using EventManagementSystem.Services.Helper.SignatureEmail.Interfaces;
 using System.Security;
 
-namespace EventManagementSystem.Controllers;
+namespace EventManagementSystem.Web.Controllers;
 
 public class AccountController : Controller
 {
